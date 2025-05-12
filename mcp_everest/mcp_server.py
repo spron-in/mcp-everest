@@ -166,3 +166,15 @@ def update_database_cluster(namespace: str, name: str, spec: Dict[str, Any]) -> 
         logger.error(f"Failed to update database cluster: {str(e)}")
         return {"error": str(e)}
 
+@mcp.tool()
+def delete_database_cluster(namespace: str, name: str) -> Dict[str, Any]:
+    """Delete a database cluster."""
+    logger.info(f"Deleting database cluster '{name}' in namespace '{namespace}'")
+    client = create_everest_client()
+    try:
+        result = client.delete_database_cluster(namespace, name)
+        return result
+    except Exception as e:
+        logger.error(f"Failed to delete database cluster: {str(e)}")
+        return {"error": str(e)}
+
