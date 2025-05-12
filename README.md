@@ -1,7 +1,7 @@
 
 # Unofficial Percona Everest MCP Server
 
-An unofficial MCP (Model Context Protocol) server implementation for Percona Everest. This server enables AI-powered interaction with Percona Everest database clusters through a standardized protocol.
+An unofficial MCP (Model Context Protocol) server implementation for [Percona Everest](https://docs.percona.com/everest/index.html) - an open-source cloud native database platform. This server enables AI-powered interaction with Percona Everest database clusters through a standardized protocol.
 
 ## Available Tools
 
