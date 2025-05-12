@@ -1,9 +1,10 @@
 import logging
+from typing import List, Dict, Any
 
-from aiven.client import client
 from mcp.server.fastmcp import FastMCP
 
 from mcp_everest.mcp_env import config
+from mcp_everest.everest_client import EverestClient, EverestConfig
 
 MCP_SERVER_NAME = "mcp-everest"
 
