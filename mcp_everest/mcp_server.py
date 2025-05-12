@@ -14,8 +14,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(MCP_SERVER_NAME)
 
-load_dotenv()
-
 deps = [
     "python-dotenv",
     "uvicorn",
