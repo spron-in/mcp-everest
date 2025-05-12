@@ -1,3 +1,4 @@
+
 """Environment configuration for the MCP Percona Everest server.
 
 This module handles all environment variable configuration with sensible defaults
@@ -10,61 +11,55 @@ import os
 
 
 @dataclass
-class AivenConfig:
-    """Configuration for Aiven connection settings.
-
-    This class handles all environment variable configuration with sensible defaults
-    and type conversion. It provides typed methods for accessing each configuration value.
+class EverestEnvConfig:
+    """Configuration for Everest connection settings.
 
     Required environment variables:
-        AIVEN_BASE_URL: Aiven API base URL (default https://api.aiven.io)
-        AIVEN_TOKEN: The token for authentication
+        EVEREST_HOST: Everest API base URL (default: http://localhost:8080)
+        EVEREST_API_KEY: The API key for authentication
+        EVEREST_VERIFY_SSL: Whether to verify SSL certificates (default: true)
+        EVEREST_TIMEOUT: Request timeout in seconds (default: 30)
+        EVEREST_READONLY: Whether to run in read-only mode (default: false)
     """
 
     def __init__(self):
         """Initialize the configuration from environment variables."""
-        self._validate_required_vars()
+        load_dotenv()
 
     @property
-    def url(self) -> str:
-        """Get the Aiven Base URL."""
-        return os.getenv("AIVEN_BASE_URL")
+    def host(self) -> str:
+        """Get the Everest Base URL."""
+        return os.getenv("EVEREST_HOST", "http://localhost:8080")
 
     @property
-    def token(self) -> str:
-        """Get the Aiven Token."""
-        return os.getenv("AIVEN_TOKEN")
+    def api_key(self) -> str:
+        """Get the Everest API Key."""
+        return os.getenv("EVEREST_API_KEY")
 
-    def get_client_config(self) -> dict:
-        """Get the configuration dictionary for aiven_connect client.
+    @property
+    def verify_ssl(self) -> bool:
+        """Get SSL verification setting."""
+        return os.getenv("EVEREST_VERIFY_SSL", "true").lower() == "true"
 
-        Returns:
-            dict: Configuration ready to be passed to aiven_connect.get_client()
-        """
-        config = {
-            "url": self.url,
-            "token": self.token,
-        }
+    @property
+    def timeout(self) -> int:
+        """Get request timeout."""
+        return int(os.getenv("EVEREST_TIMEOUT", "30"))
 
-        return config
+    @property
+    def readonly(self) -> bool:
+        """Get readonly mode setting."""
+        return os.getenv("EVEREST_READONLY", "false").lower() == "true"
 
-    def _validate_required_vars(self) -> None:
+    def validate(self) -> None:
         """Validate that all required environment variables are set.
 
         Raises:
             ValueError: If any required environment variable is missing.
         """
-        load_dotenv()
-        missing_vars = []
-        for var in ["AIVEN_BASE_URL", "AIVEN_TOKEN"]:
-            if var not in os.environ:
-                missing_vars.append(var)
-
-        if missing_vars:
-            raise ValueError(
-                f"Missing required environment variables: {', '.join(missing_vars)}"
-            )
+        if not self.api_key:
+            raise ValueError("EVEREST_API_KEY environment variable is required")
 
 
 # Global instance for easy access
-config = AivenConfig()
+config = EverestEnvConfig()
