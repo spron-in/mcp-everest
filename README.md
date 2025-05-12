@@ -43,15 +43,15 @@ uv run --with mcp-everest mcp-everest
 
 ## Testing and playing
 
-### Testing with mcp tool
+### Testing with [MCP Inspector](https://github.com/modelcontextprotocol/inspector)
 
 To test the server with the MCP development client:
 
 ```bash
-mcp dev mcp_server.py
+mcp dev mcp_everest/mcp_server.py
 ```
 
-This requires Node to be installed. It will start a nodejs MCP server that you can open in your browser and play with.
+This requires Node to be installed. It will start a NodeJS MCP Inspector that you can open in your browser and play with.
 
 ### Example mcp_client.py
 
