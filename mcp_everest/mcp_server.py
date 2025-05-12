@@ -46,15 +46,23 @@ def to_json(obj: Any) -> str:
         return {key: to_json(value) for key, value in obj.items()}
     return obj
 
-from .utils import create_everest_client
+from .everest_client import EverestClient, EverestConfig
+
+# Initialize Everest client using config
+everest_config = EverestConfig(
+    host=config.host,
+    api_key=config.api_key,
+    verify_ssl=config.verify_ssl,
+    timeout=config.timeout
+)
+everest_client = EverestClient(everest_config)
 
 @mcp.tool()
 def list_database_clusters(namespace: str) -> List[Dict[str, Any]]:
     """List available database clusters in the specified namespace."""
     logger.info(f"Listing database clusters in namespace '{namespace}'")
-    client = create_everest_client()
     try:
-        clusters = client.list_database_clusters(namespace)
+        clusters = everest_client.list_database_clusters(namespace)
         logger.info(f"Found {len(clusters)} database clusters")
         return clusters
     except Exception as e:
@@ -65,9 +73,8 @@ def list_database_clusters(namespace: str) -> List[Dict[str, Any]]:
 def get_database_cluster(namespace: str, name: str) -> Dict[str, Any]:
     """Get details of a specific database cluster."""
     logger.info(f"Getting database cluster '{name}' in namespace '{namespace}'")
-    client = create_everest_client()
     try:
-        cluster = client.get_database_cluster(namespace, name)
+        cluster = everest_client.get_database_cluster(namespace, name)
         return cluster
     except Exception as e:
         logger.error(f"Failed to get database cluster: {str(e)}")
@@ -77,9 +84,8 @@ def get_database_cluster(namespace: str, name: str) -> Dict[str, Any]:
 def get_database_cluster_credentials(namespace: str, name: str) -> Dict[str, Any]:
     """Get credentials for a specific database cluster."""
     logger.info(f"Getting credentials for database cluster '{name}' in namespace '{namespace}'")
-    client = create_everest_client()
     try:
-        credentials = client.get_database_cluster_credentials(namespace, name)
+        credentials = everest_client.get_database_cluster_credentials(namespace, name)
         return credentials
     except Exception as e:
         logger.error(f"Failed to get database cluster credentials: {str(e)}")
@@ -89,9 +95,8 @@ def get_database_cluster_credentials(namespace: str, name: str) -> Dict[str, Any
 def get_database_cluster_components(namespace: str, name: str) -> Dict[str, Any]:
     """Get components of a specific database cluster."""
     logger.info(f"Getting components for database cluster '{name}' in namespace '{namespace}'")
-    client = create_everest_client()
     try:
-        components = client.get_database_cluster_components(namespace, name)
+        components = everest_client.get_database_cluster_components(namespace, name)
         return components
     except Exception as e:
         logger.error(f"Failed to get database cluster components: {str(e)}")
