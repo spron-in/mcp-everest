@@ -26,7 +26,8 @@ async def run():
     # Remove debug prints
     async with stdio_client(server_params) as (read, write):
         async with ClientSession(read, write) as session:
-            prompt = f"How many database clusters are there in the namespace 'default'?"
+            # prompt = f"How many database clusters are there in the namespace 'default'?"
+            prompt = f"Create pxc cluster in namespace everest with 1 node and 10 GB storage"
             await session.initialize()
             # Remove debug prints
 

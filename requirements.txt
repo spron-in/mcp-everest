@@ -2,3 +2,4 @@
 requests==2.32.3
 google-generativeai
 mcp
+sift-stack-py
