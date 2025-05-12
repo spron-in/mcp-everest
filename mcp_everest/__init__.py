@@ -1,13 +1,14 @@
+
 from .mcp_server import (
-    create_clickhouse_client,
-    list_databases,
-    list_tables,
-    run_select_query,
+    list_database_clusters,
+    get_database_cluster,
+    get_database_cluster_credentials,
+    get_database_cluster_components,
 )
 
 __all__ = [
-    "list_databases",
-    "list_tables",
-    "run_select_query",
-    "create_clickhouse_client",
+    "list_database_clusters",
+    "get_database_cluster",
+    "get_database_cluster_credentials",
+    "get_database_cluster_components",
 ]
