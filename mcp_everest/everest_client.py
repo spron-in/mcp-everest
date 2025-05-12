@@ -58,3 +58,15 @@ class EverestClient:
     def list_database_clusters(self, namespace: str) -> List[Dict[str, Any]]:
         """List all database clusters in a namespace."""
         return self._make_request("GET", f"/namespaces/{namespace}/database-clusters")
+
+    def get_database_cluster(self, namespace: str, name: str) -> Dict[str, Any]:
+        """Get details of a specific database cluster."""
+        return self._make_request("GET", f"/namespaces/{namespace}/database-clusters/{name}")
+
+    def get_database_cluster_credentials(self, namespace: str, name: str) -> Dict[str, Any]:
+        """Get credentials for a specific database cluster."""
+        return self._make_request("GET", f"/namespaces/{namespace}/database-clusters/{name}/credentials")
+
+    def get_database_cluster_components(self, namespace: str, name: str) -> Dict[str, Any]:
+        """Get components of a specific database cluster."""
+        return self._make_request("GET", f"/namespaces/{namespace}/database-clusters/{name}/components")
