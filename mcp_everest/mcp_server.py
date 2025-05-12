@@ -19,10 +19,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(MCP_SERVER_NAME)
 
-QUERY_EXECUTOR = concurrent.futures.ThreadPoolExecutor(max_workers=10)
-atexit.register(lambda: QUERY_EXECUTOR.shutdown(wait=True))
-SELECT_QUERY_TIMEOUT_SECS = 30
-
 load_dotenv()
 
 deps = [

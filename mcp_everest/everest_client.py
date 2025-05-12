@@ -74,7 +74,3 @@ class EverestClient:
     def update_database_cluster(self, namespace: str, name: str, spec: Dict[str, Any]) -> Dict[str, Any]:
         """Update a database cluster's specification."""
         return self._make_request("PUT", f"/namespaces/{namespace}/database-clusters/{name}", json={"spec": spec})
-
-    def delete_database_cluster(self, namespace: str, name: str) -> Dict[str, Any]:
-        """Delete a database cluster."""
-        return self._make_request("DELETE", f"/namespaces/{namespace}/database-clusters/{name}")
