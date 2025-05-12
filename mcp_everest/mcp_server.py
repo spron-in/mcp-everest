@@ -52,15 +52,7 @@ def to_json(obj: Any) -> str:
         return {key: to_json(value) for key, value in obj.items()}
     return obj
 
-def create_everest_client() -> EverestClient:
-    """Create and return an Everest client instance."""
-    config = EverestConfig(
-        host=os.getenv("EVEREST_HOST", "http://localhost:8080"),
-        api_key=os.getenv("EVEREST_API_KEY"),
-        verify_ssl=os.getenv("EVEREST_VERIFY_SSL", "true").lower() == "true",
-        timeout=int(os.getenv("EVEREST_TIMEOUT", "30"))
-    )
-    return EverestClient(config)
+from .utils import create_everest_client
 
 @mcp.tool()
 def list_database_clusters(namespace: str) -> List[Dict[str, Any]]:

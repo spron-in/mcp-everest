@@ -1,7 +1,7 @@
 
 from typing import Dict, Any
 import logging
-from .mcp_server import create_everest_client
+from .utils import create_everest_client
 
 logger = logging.getLogger(__name__)
 
