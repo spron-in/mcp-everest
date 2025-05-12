@@ -95,3 +95,39 @@ def list_database_clusters(namespace: str) -> List[Dict[str, Any]]:
         logger.error(f"Failed to list database clusters: {str(e)}")
         return {"error": str(e)}
 
+@mcp.tool()
+def get_database_cluster(namespace: str, name: str) -> Dict[str, Any]:
+    """Get details of a specific database cluster."""
+    logger.info(f"Getting database cluster '{name}' in namespace '{namespace}'")
+    client = create_everest_client()
+    try:
+        cluster = client.get_database_cluster(namespace, name)
+        return cluster
+    except Exception as e:
+        logger.error(f"Failed to get database cluster: {str(e)}")
+        return {"error": str(e)}
+
+@mcp.tool()
+def get_database_cluster_credentials(namespace: str, name: str) -> Dict[str, Any]:
+    """Get credentials for a specific database cluster."""
+    logger.info(f"Getting credentials for database cluster '{name}' in namespace '{namespace}'")
+    client = create_everest_client()
+    try:
+        credentials = client.get_database_cluster_credentials(namespace, name)
+        return credentials
+    except Exception as e:
+        logger.error(f"Failed to get database cluster credentials: {str(e)}")
+        return {"error": str(e)}
+
+@mcp.tool()
+def get_database_cluster_components(namespace: str, name: str) -> Dict[str, Any]:
+    """Get components of a specific database cluster."""
+    logger.info(f"Getting components for database cluster '{name}' in namespace '{namespace}'")
+    client = create_everest_client()
+    try:
+        components = client.get_database_cluster_components(namespace, name)
+        return components
+    except Exception as e:
+        logger.error(f"Failed to get database cluster components: {str(e)}")
+        return {"error": str(e)}
+
