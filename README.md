@@ -61,7 +61,7 @@ There is also a client that can be used to interact with the MCP server:
 python mcp_client.py
 ```
 
-This will output the tools available in the MCP server. Script can be easily altered.
+This is the example of how Large Language Model can talk to an MCP and use its tools. Read more in the [blog post](https://spron.in/blog/tpost/iksv5fzx91-fun-with-mcp-and-percona-everest).
 
 ## Future Development
 
@@ -74,6 +74,7 @@ This will output the tools available in the MCP server. Script can be easily alt
 2. **API Coverage Expansion**
    - Implement more GET endpoints from the Everest API
    - Add support for POST/PUT/DELETE operations (but have read-only mode available)
+   - Add proper types and supported variables from API spec
    - Include resources and prompts into MCP
 
 3. **Cross-Integration**

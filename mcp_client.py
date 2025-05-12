@@ -1,84 +1,88 @@
+# pip install google-generativeai mcp
 import asyncio
-import google.generativeai as genai
-from mcp import ClientSession, StdioServerParameters, types
+import os
+# Add json import for formatting output
+import json
+from datetime import datetime
+from google import genai
+from google.genai import types
+from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-# The command to run your MCP server
-MCP_SERVER_COMMAND = ["uv", "run", "--with", "mcp-everest", "mcp-everest"]
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-# Replace with your actual Gemini API key
-GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
-genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-pro')
+# Re-add StdioServerParameters, setting args for stdio
+server_params = StdioServerParameters(
+    command="uv",
+    args=["run", "--with", "mcp-everest", "mcp-everest"],
+    env={
+        "EVEREST_HOST": os.getenv("EVEREST_HOST", "http://localhost:8080"),
+        "EVEREST_API_KEY": os.getenv("EVEREST_API_KEY"),
+        "EVEREST_VERIFY_SSL": os.getenv("EVEREST_VERIFY_SSL", "true"),
+    }
+)
 
-async def handle_server_response(server_output: str) -> str:
-    """Processes the raw server output using Gemini."""
-    if server_output:
-        prompt = f"The MCP server outputted the following: {server_output}. Please analyze and provide insights."
-        response = await model.generate_content_async(prompt)  # Use async version
-        return response.text
-    else:
-        return "No output received from the MCP server."
+async def run():
+    # Remove debug prints
+    async with stdio_client(server_params) as (read, write):
+        async with ClientSession(read, write) as session:
+            prompt = f"How many database clusters are there in the namespace 'default'?"
+            await session.initialize()
+            # Remove debug prints
 
-async def run_client(user_query: str):
-    """Runs the MCP client and interacts with Gemini."""
-    server_params = StdioServerParameters(
-        command=MCP_SERVER_COMMAND[0],
-        args=MCP_SERVER_COMMAND[1:],
-        env=None,
-    )
+            mcp_tools = await session.list_tools()
+            # Remove debug prints
+            tools = [
+                types.Tool(
+                    function_declarations=[
+                        {
+                            "name": tool.name,
+                            "description": tool.description,
+                            "parameters": {
+                                k: v
+                                for k, v in tool.inputSchema.items()
+                                if k not in ["additionalProperties", "$schema"]
+                            },
+                        }
+                    ]
+                )
+                for tool in mcp_tools.tools
+            ]
+            # Remove debug prints
 
-    async def sampling_callback(
-        message: types.CreateMessageRequestParams,
-    ) -> types.CreateMessageResult:
-        # You can customize how the client responds here if the server requests sampling.
-        # For a basic interaction, we might just return an empty or default response.
-        return types.CreateMessageResult(
-            role="assistant",
-            content=types.TextContent(
-                type="text",
-                text="Processing...",
-            ),
-            model="gemini-pro",
-            stopReason="intermediate",
-        )
+            response = client.models.generate_content(
+                model="gemini-2.5-pro-exp-03-25",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0,
+                    tools=tools,
+                ),
+            )
 
-    try:
-        async with stdio_client(server_params) as (read, write):
-            async with ClientSession(
-                read, write, sampling_callback=sampling_callback
-            ) as session:
-                await session.initialize()
+            # Remove raw response print
+            if response.candidates[0].content.parts[0].function_call:
+                function_call = response.candidates[0].content.parts[0].function_call
 
-                tools = await session.list_tools()
-                print(tools)
-
-                """
-                # Send a CreateMessageRequest to the server
-                response = await session.create_message(
-                    prompt="user_query",  # You might need to adjust this based on your server's expectations
-                    messages=[
-                        types.ChatMessage(
-                            role="user",
-                            content=[types.TextContent(type="text", text=user_query)],
-                        )
-                    ],
+                result = await session.call_tool(
+                    function_call.name, arguments=dict(function_call.args)
                 )
 
-                if response and response.choices:
-                    server_output = response.choices[0].message.content[0].text
-                    print(f"\nResponse from MCP server: {server_output}")
-                    gemini_analysis = await handle_server_response(server_output)
-                    print(f"\nGemini's analysis: {gemini_analysis}")
-                else:
-                    print("\nNo meaningful response received from the MCP server.")
-                """
+                # Parse and print formatted JSON result
+                print("--- Formatted Result ---") # Add header for clarity
+                try:
+                    everest_data = json.loads(result.content[0].text)
+                    print(json.dumps(everest_data, indent=2))
+                except json.JSONDecodeError:
+                    print("MCP server returned non-JSON response:")
+                    print(result.content[0].text)
+                except (IndexError, AttributeError):
+                     print("Unexpected result structure from MCP server:")
+                     print(result)
+            else:
+                print("No function call was generated by the model.")
+                if response.text:
+                     print("Model response:")
+                     print(response.text)
 
-    except FileNotFoundError:
-        print(f"Error: Command not found: {MCP_SERVER_COMMAND[0]}. Make sure it's in your PATH.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
-
-if __name__ == "__main__":
-    user_query = input("Enter your query for the MCP server: ")
-    asyncio.run(run_client(user_query))
+# Revert main block
+asyncio.run(run())
