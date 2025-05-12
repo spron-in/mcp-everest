@@ -109,6 +109,7 @@ def create_database_cluster(
     try:
         cluster = everest_client.create_database_cluster(
             namespace=namespace,
+            name=name,
             engine_type=engine_type,
             storage_size=storage_size,
             replicas=replicas,
