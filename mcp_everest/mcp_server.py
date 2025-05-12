@@ -101,3 +101,15 @@ def get_database_cluster_components(namespace: str, name: str) -> Dict[str, Any]
         logger.error(f"Failed to get database cluster components: {str(e)}")
         return {"error": str(e)}
 
+@mcp.tool()
+def update_database_cluster(namespace: str, name: str, spec: Dict[str, Any]) -> Dict[str, Any]:
+    """Update a database cluster's specification."""
+    logger.info(f"Updating database cluster '{name}' in namespace '{namespace}'")
+    client = create_everest_client()
+    try:
+        result = client.update_database_cluster(namespace, name, spec)
+        return result
+    except Exception as e:
+        logger.error(f"Failed to update database cluster: {str(e)}")
+        return {"error": str(e)}
+

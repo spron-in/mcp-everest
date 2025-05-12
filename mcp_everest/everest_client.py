@@ -70,3 +70,7 @@ class EverestClient:
     def get_database_cluster_components(self, namespace: str, name: str) -> Dict[str, Any]:
         """Get components of a specific database cluster."""
         return self._make_request("GET", f"/namespaces/{namespace}/database-clusters/{name}/components")
+
+    def update_database_cluster(self, namespace: str, name: str, spec: Dict[str, Any]) -> Dict[str, Any]:
+        """Update a database cluster's specification."""
+        return self._make_request("PUT", f"/namespaces/{namespace}/database-clusters/{name}", json={"spec": spec})
