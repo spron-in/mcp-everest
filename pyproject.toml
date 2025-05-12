@@ -18,7 +18,7 @@ dependencies = [
 mcp-everest = "mcp_everest.main:main"
 
 [project.urls]
-Home = "https://github.com/percona/mcp-everest"
+Home = "https://github.com/spron-in/mcp-everest"
 
 [project.optional-dependencies]
 dev = [
