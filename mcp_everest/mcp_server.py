@@ -21,32 +21,11 @@ deps = [
     "requests",
 ]
 
-# Check if read-only mode is enabled
-readonly_mode = os.getenv("EVEREST_READONLY", "false").lower() == "true"
-
 # Configure MCP server
 mcp = FastMCP(
     MCP_SERVER_NAME,
     dependencies=deps,
 )
-
-if readonly_mode:
-    logger.info("Running in read-only mode - only GET operations are allowed")
-else:
-    # Import and register write operations only in non-readonly mode
-    from .write_operations import register_write_operations
-    register_write_operations(mcp)
-
-def to_json(obj: Any) -> str:
-    if is_dataclass(obj):
-        return json.dumps(asdict(obj), default=to_json)
-    elif isinstance(obj, list):
-        return [to_json(item) for item in obj]
-    elif isinstance(obj, dict):
-        return {key: to_json(value) for key, value in obj.items()}
-    return obj
-
-from .everest_client import EverestClient, EverestConfig
 
 # Initialize Everest client using config
 everest_config = EverestConfig(
