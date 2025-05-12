@@ -63,12 +63,6 @@ deps = [
 
 mcp = FastMCP(MCP_SERVER_NAME, dependencies=deps)
 
-def result_to_table(query_columns, result) -> List[Table]:
-    return [Table(**dict(zip(query_columns, row))) for row in result]
-
-def result_to_column(query_columns, result) -> List[Column]:
-    return [Column(**dict(zip(query_columns, row))) for row in result]
-
 def to_json(obj: Any) -> str:
     if is_dataclass(obj):
         return json.dumps(asdict(obj), default=to_json)
@@ -101,22 +95,3 @@ def list_database_clusters(namespace: str) -> List[Dict[str, Any]]:
         logger.error(f"Failed to list database clusters: {str(e)}")
         return {"error": str(e)}
 
-@mcp.tool()
-def list_databases():
-    return {"error": "Not Implemented"}
-
-@mcp.tool()
-def list_tables(
-    database: str, like: Optional[str] = None, not_like: Optional[str] = None
-):
-    return {"error": "Not Implemented"}
-
-@mcp.tool()
-def run_select_query(query: str):
-    return {"error": "Not Implemented"}
-def execute_query(query: str):
-    return {"error": "Not Implemented"}
-def create_clickhouse_client():
-    return {"error": "Not Implemented"}
-def get_readonly_setting(client):
-    return {"error": "Not Implemented"}

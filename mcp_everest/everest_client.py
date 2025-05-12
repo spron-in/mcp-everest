@@ -1,4 +1,3 @@
-
 """Client library for Percona Everest API."""
 
 import logging
