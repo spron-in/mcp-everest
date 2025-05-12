@@ -1,7 +1,7 @@
 
 [project]
 name = "mcp-everest"
-version = "0.1.2"
+version = "0.1.4"
 description = "An MCP server for Percona Everest."
 readme = "README.md"
 license = "Apache-2.0"

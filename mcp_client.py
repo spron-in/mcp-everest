@@ -27,7 +27,7 @@ async def run():
     async with stdio_client(server_params) as (read, write):
         async with ClientSession(read, write) as session:
             # prompt = f"How many database clusters are there in the namespace 'default'?"
-            prompt = f"Create pxc cluster in namespace everest with 1 node and 10 GB storage with a random name"
+            prompt = f"Create pxc cluster in namespace everest with 1 node and 10 GB storage, name it mcp-test"
             await session.initialize()
 
             mcp_tools = await session.list_tools()
@@ -60,12 +60,15 @@ async def run():
             )
 
             # Remove raw response print
+            print(response)
             if response.candidates[0].content.parts[0].function_call:
                 function_call = response.candidates[0].content.parts[0].function_call
 
                 result = await session.call_tool(
                     function_call.name, arguments=dict(function_call.args)
                 )
+                print(function_call.args)
+                print(result)
 
                 # Parse and print formatted JSON result
                 print("--- Formatted Result ---") # Add header for clarity

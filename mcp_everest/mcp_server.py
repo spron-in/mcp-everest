@@ -98,10 +98,10 @@ def create_database_cluster(
         namespace: The namespace to create the cluster in
         name: Name of the database cluster
         engine_type: Type of database engine (e.g. 'pxc')
-        storage_size: Size of storage in GB
+        storage_size: Size of storage using the Mi, Gi suffix
         replicas: Number of database replicas
         cpu: CPU cores per replica
-        memory: Memory in GB per replica
+        memory: Memory per replica using the Mi, Gi suffix
         allow_unsafe: Allow unsafe configurations
         proxy_replicas: Number of proxy replicas
     """
