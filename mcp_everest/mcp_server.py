@@ -1,15 +1,9 @@
 import logging
-import json
-from typing import Optional, List, Any, Dict
-import concurrent.futures
-import atexit
-import os
 
-from dotenv import load_dotenv
+from aiven.client import client
 from mcp.server.fastmcp import FastMCP
-from dataclasses import asdict, is_dataclass
 
-from .everest_client import EverestClient, EverestConfig
+from mcp_everest.mcp_env import config
 
 MCP_SERVER_NAME = "mcp-everest"
 
