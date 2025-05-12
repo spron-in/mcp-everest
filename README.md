@@ -18,6 +18,8 @@ The MCP server provides the following tools for interacting with Percona Everest
 ```bash
 git clone https://github.com/spron-in/mcp-everest
 cd mcp-everest
+uv venv
+source .venv/bin/activate
 ```
 
 2. Set up environment variables:
@@ -25,14 +27,14 @@ cd mcp-everest
 # Required
 export EVEREST_API_KEY="your-api-key"
 
-Read [Percona Everest documentation](https://docs.percona.com/everest/API.html) to learn more about API. I sent a [pull request](https://github.com/percona/everest-doc/pull/255) that explains how to get the API (JWT) key, hope it is going to be accepted soon.
-
 # Optional with defaults
 export EVEREST_HOST="http://localhost:8080"  # Everest API base URL
 export EVEREST_VERIFY_SSL="true"             # SSL verification
 export EVEREST_TIMEOUT="30"                  # Request timeout in seconds
 export EVEREST_READONLY="false"              # Read-only mode
 ```
+
+Read [Percona Everest documentation](https://docs.percona.com/everest/API.html) to learn more about API. I sent a [pull request](https://github.com/percona/everest-doc/pull/255) that explains how to get the API (JWT) key, hope it is going to be accepted soon.
 
 3. Run the server:
 ```bash
