@@ -80,5 +80,42 @@ def get_database_cluster_components(namespace: str, name: str) -> Dict[str, Any]
         logger.error(f"Failed to get database cluster components: {str(e)}")
         return {"error": str(e)}
 
+@mcp.tool()
+def create_database_cluster(
+    namespace: str,
+    engine_type: str,
+    storage_size: int,
+    replicas: int = 1,
+    cpu: int = 1,
+    memory: int = 1,
+    allow_unsafe: bool = True,
+    proxy_replicas: int = 1
+) -> Dict[str, Any]:
+    """Create a new database cluster in the specified namespace.
 
-
+    Args:
+        namespace: The namespace to create the cluster in
+        engine_type: Type of database engine (e.g. 'pxc')
+        storage_size: Size of storage in GB
+        replicas: Number of database replicas
+        cpu: CPU cores per replica
+        memory: Memory in GB per replica
+        allow_unsafe: Allow unsafe configurations
+        proxy_replicas: Number of proxy replicas
+    """
+    logger.info(f"Creating database cluster in namespace '{namespace}'")
+    try:
+        cluster = everest_client.create_database_cluster(
+            namespace=namespace,
+            engine_type=engine_type,
+            storage_size=storage_size,
+            replicas=replicas,
+            cpu=cpu,
+            memory=memory,
+            allow_unsafe=allow_unsafe,
+            proxy_replicas=proxy_replicas
+        )
+        return cluster
+    except Exception as e:
+        logger.error(f"Failed to create database cluster: {str(e)}")
+        return {"error": str(e)}

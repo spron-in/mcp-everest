@@ -71,6 +71,37 @@ class EverestClient:
         """Get components of a specific database cluster."""
         return self._make_request("GET", f"/namespaces/{namespace}/database-clusters/{name}/components")
 
+    def create_database_cluster(
+        self,
+        namespace: str,
+        engine_type: str,
+        storage_size: int,
+        replicas: int = 1,
+        cpu: int = 1,
+        memory: int = 1,
+        allow_unsafe: bool = True,
+        proxy_replicas: int = 1
+    ) -> Dict[str, Any]:
+        """Create a new database cluster in the specified namespace."""
+        spec = {
+            "engine": {
+                "type": engine_type,
+                "storage": {
+                    "size": storage_size
+                },
+                "replicas": replicas,
+                "resources": {
+                    "cpu": cpu,
+                    "memory": memory
+                }
+            },
+            "allowUnsafeConfiguration": allow_unsafe,
+            "proxy": {
+                "replicas": proxy_replicas
+            }
+        }
+        return self._make_request("POST", f"/namespaces/{namespace}/database-clusters", json={"spec": spec})
+
     def update_database_cluster(self, namespace: str, name: str, spec: Dict[str, Any]) -> Dict[str, Any]:
         """Update a database cluster's specification."""
         return self._make_request("PUT", f"/namespaces/{namespace}/database-clusters/{name}", json={"spec": spec})
