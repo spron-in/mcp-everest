@@ -7,39 +7,9 @@ import os
 
 from dotenv import load_dotenv
 from mcp.server.fastmcp import FastMCP
-from dataclasses import dataclass, field, asdict, is_dataclass
+from dataclasses import asdict, is_dataclass
 
 from .everest_client import EverestClient, EverestConfig
-
-@dataclass
-class Column:
-    database: str
-    table: str
-    name: str
-    column_type: str
-    default_kind: Optional[str]
-    default_expression: Optional[str]
-    comment: Optional[str]
-
-@dataclass
-class Table:
-    database: str
-    name: str
-    engine: str
-    create_table_query: str
-    dependencies_database: str
-    dependencies_table: str
-    engine_full: str
-    sorting_key: str
-    primary_key: str
-    total_rows: int
-    total_bytes: int
-    total_bytes_uncompressed: int
-    parts: int
-    active_parts: int
-    total_marks: int
-    comment: Optional[str] = None
-    columns: List[Column] = field(default_factory=list)
 
 MCP_SERVER_NAME = "mcp-everest"
 
