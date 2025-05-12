@@ -74,11 +74,12 @@ class EverestClient:
     def create_database_cluster(
         self,
         namespace: str,
+        name: str,
         engine_type: str,
-        storage_size: int,
+        storage_size: str = "10Gi",
         replicas: int = 1,
         cpu: int = 1,
-        memory: int = 1,
+        memory: str = "1Gi",
         allow_unsafe: bool = True,
         proxy_replicas: int = 1
     ) -> Dict[str, Any]:

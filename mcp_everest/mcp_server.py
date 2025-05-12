@@ -83,11 +83,12 @@ def get_database_cluster_components(namespace: str, name: str) -> Dict[str, Any]
 @mcp.tool()
 def create_database_cluster(
     namespace: str,
+    name: str,
     engine_type: str,
-    storage_size: int,
+    storage_size: str = "10Gi",
     replicas: int = 1,
     cpu: int = 1,
-    memory: int = 1,
+    memory: str = "1Gi",
     allow_unsafe: bool = True,
     proxy_replicas: int = 1
 ) -> Dict[str, Any]:
@@ -95,6 +96,7 @@ def create_database_cluster(
 
     Args:
         namespace: The namespace to create the cluster in
+        name: Name of the database cluster
         engine_type: Type of database engine (e.g. 'pxc')
         storage_size: Size of storage in GB
         replicas: Number of database replicas
