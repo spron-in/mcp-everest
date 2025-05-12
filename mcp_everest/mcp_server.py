@@ -31,7 +31,18 @@ deps = [
     "requests",
 ]
 
-mcp = FastMCP(MCP_SERVER_NAME, dependencies=deps)
+# Check if read-only mode is enabled
+readonly_mode = os.getenv("EVEREST_READONLY", "false").lower() == "true"
+
+# Configure MCP with read-only mode if enabled
+mcp = FastMCP(
+    MCP_SERVER_NAME,
+    dependencies=deps,
+    read_only=readonly_mode
+)
+
+if readonly_mode:
+    logger.info("Running in read-only mode - only GET operations are allowed")
 
 def to_json(obj: Any) -> str:
     if is_dataclass(obj):
