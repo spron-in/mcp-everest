@@ -4,8 +4,6 @@ import os
 # Add json import for formatting output
 import json
 from datetime import datetime
-#from google import genai
-#from google.genai import types
 
 import google.generativeai as genai
 from google.generativeai.types import Tool, GenerationConfig
@@ -14,7 +12,6 @@ from google.generativeai.types import Tool, GenerationConfig
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-#client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 
