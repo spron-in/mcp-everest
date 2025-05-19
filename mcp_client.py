@@ -4,12 +4,16 @@ import os
 # Add json import for formatting output
 import json
 from datetime import datetime
-from google import genai
-from google.genai import types
+
+import google.generativeai as genai
+from google.generativeai.types import Tool, GenerationConfig
+
+
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
 
 # Re-add StdioServerParameters, setting args for stdio
 server_params = StdioServerParameters(
@@ -25,6 +29,7 @@ server_params = StdioServerParameters(
 async def run():
     # Remove debug prints
     async with stdio_client(server_params) as (read, write):
+        model = genai.GenerativeModel("gemini-1.5-flash")
         async with ClientSession(read, write) as session:
             # prompt = f"How many database clusters are there in the namespace 'default'?"
             prompt = f"Create pxc cluster in namespace everest with 1 node and 10 GB storage, name it mcp-test"
@@ -33,15 +38,20 @@ async def run():
             mcp_tools = await session.list_tools()
             # Remove debug prints
             tools = [
-                types.Tool(
+                Tool(
                     function_declarations=[
                         {
                             "name": tool.name,
                             "description": tool.description,
                             "parameters": {
-                                k: v
-                                for k, v in tool.inputSchema.items()
-                                if k not in ["additionalProperties", "$schema"]
+                                "type": "object",
+                                "properties": {
+                                    param_name: {
+                                        "type": "string"
+                                    }
+                                    for param_name in tool.inputSchema.get("properties", {}).keys()
+                                },
+                                "required": tool.inputSchema.get("required", [])
                             },
                         }
                     ]
@@ -50,14 +60,14 @@ async def run():
             ]
             # Remove debug prints
 
-            response = client.models.generate_content(
-                model="gemini-2.5-pro-exp-03-25",
-                contents=prompt,
-                config=types.GenerateContentConfig(
+            response = model.generate_content(
+                prompt,
+                generation_config=GenerationConfig(
                     temperature=0,
-                    tools=tools,
                 ),
+                tools=tools,
             )
+
 
             # Remove raw response print
             print(response)

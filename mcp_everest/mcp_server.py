@@ -90,7 +90,16 @@ def create_database_cluster(
     cpu: int = 1,
     memory: str = "1Gi",
     allow_unsafe: bool = True,
-    proxy_replicas: int = 1
+    proxy_replicas: int = 1,
+    engine_version: str = "8.0.39-30.1",
+    user_secrets_name: str = "",
+    engine_config: str = "",
+    proxy_type: str = "haproxy",
+    proxy_cpu: str = "200m",
+    proxy_memory: str = "200M",
+    proxy_expose_type: str = "internal",
+
+
 ) -> Dict[str, Any]:
     """Create a new database cluster in the specified namespace.
 
@@ -116,7 +125,15 @@ def create_database_cluster(
             cpu=cpu,
             memory=memory,
             allow_unsafe=allow_unsafe,
-            proxy_replicas=proxy_replicas
+            proxy_replicas=proxy_replicas,
+            engine_version=engine_version,
+            user_secrets_name=user_secrets_name,
+            engine_config=engine_config,
+            proxy_type=proxy_type,
+            proxy_cpu=proxy_cpu,
+            proxy_memory=proxy_memory,
+            proxy_expose_type=proxy_expose_type,
+            
         )
         return cluster
     except Exception as e:
