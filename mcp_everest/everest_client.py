@@ -81,7 +81,14 @@ class EverestClient:
         cpu: int = 1,
         memory: str = "1Gi",
         allow_unsafe: bool = True,
-        proxy_replicas: int = 1
+        proxy_replicas: int = 1,
+        proxy_cpu: int = 1,
+        proxy_memory: str = "1Gi",
+        proxy_type: str = "LoadBalancer",
+        proxy_expose_type: str = "LoadBalancer",
+        engine_version: str = "latest",
+        engine_config: Optional[Dict[str, Any]] = None,
+        user_secrets_name: Optional[str] = None
     ) -> Dict[str, Any]:
         """Create a new database cluster in the specified namespace."""
         payload = {
@@ -91,21 +98,42 @@ class EverestClient:
             "spec": {
                 "engine": {
                     "type": engine_type,
-                    "storage": {
-                        "size": storage_size
-                    },
+                    "version": engine_version,
                     "replicas": replicas,
                     "resources": {
-                        "cpu": cpu,
+                        "cpu": str(cpu),
                         "memory": memory
+                    },
+                    "storage": {
+                        "size": storage_size,
+                        "class": "standard-rwo"
+                    },
+                    "config": engine_config,
+                    "userSecretsName": user_secrets_name
+                },
+                "proxy": {
+                    "type": proxy_type,
+                    "replicas": proxy_replicas,
+                    "resources": {
+                        "cpu": proxy_cpu,
+                        "memory": proxy_memory
+                    },
+                    "expose": {
+                        "type": proxy_expose_type
                     }
                 },
                 "allowUnsafeConfiguration": allow_unsafe,
-                "proxy": {
-                    "replicas": proxy_replicas
+                "monitoring": {
+                    "resources": {}
+                },
+                "backup": {
+                    "pitr": {
+                        "enabled": False
+                    }
                 }
             }
         }
+
         return self._make_request("POST", f"/namespaces/{namespace}/database-clusters", json=payload)
 
     def update_database_cluster(self, namespace: str, name: str, spec: Dict[str, Any]) -> Dict[str, Any]:
